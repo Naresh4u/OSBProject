@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+  <ser:coreEntry isProxy="true" isEnabled="true">
+    <ser:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+      <con:request type="Text"/>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/OSB-MockService/proxy/mockservice</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>false</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router errorHandler="_onErrorHandler-5214944822928574067-3cfdaa47.15f90c74805.-7ffc">
+    <con:pipeline type="request" name="PipelinePairNode_request">
+      <con:stage name="InitialCheck">
+        <con:context xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config"/>
+        <con:actions xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+          <con4:log xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config">
+            <con2:id>_ActionId-5214944822928574067-3cfdaa47.15f90c74805.-7f71</con2:id>
+            <con4:logLevel>info</con4:logLevel>
+            <con4:expr>
+              <con2:xqueryText>''</con2:xqueryText>
+            </con4:expr>
+            <con4:message>Mock Service START
+
+&lt;========= Mock Service START ==========>
+
+Mock Service Input ==</con4:message>
+          </con4:log>
+          <con4:log xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config">
+            <con2:id>_ActionId-5214944822928574067-3cfdaa47.15f90c74805.-7f70</con2:id>
+            <con4:logLevel>info</con4:logLevel>
+            <con4:expr>
+              <con2:xqueryText>$body</con2:xqueryText>
+            </con4:expr>
+          </con4:log>
+          <con4:assign varName="request" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+            <con2:id>_ActionId-3340449399919010129--7bcafef.15fb948dd1f.-771b</con2:id>
+            <con4:expr>
+              <con2:xqueryText>$body/text()</con2:xqueryText>
+            </con4:expr>
+          </con4:assign>
+        </con:actions>
+      </con:stage>
+      <con:stage name="CreateCall">
+        <con:context/>
+        <con:actions>
+          <con4:wsCallout xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+            <con2:id>_ActionId-3340449399919010129--7bcafef.15fb948dd1f.-7789</con2:id>
+            <con4:service xsi:type="ref:ProxyRef" ref="OSB Project/Biz/MockServiceBizProxy" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            <con4:request>
+              <con4:payload>$request</con4:payload>
+            </con4:request>
+            <con4:response>
+              <con4:payload>response</con4:payload>
+            </con4:response>
+            <con4:requestTransform>
+              <con4:transport-headers copy-all="true">
+                <con2:id>_ActionId-3340449399919010129--7bcafef.15fb948dd1f.-778b</con2:id>
+                <con4:header-set>outbound-request</con4:header-set>
+              </con4:transport-headers>
+              <con4:insert varName="outbound">
+                <con2:id>_ActionId-3340449399919010129--7bcafef.15fb948dd1f.-778a</con2:id>
+                <con4:location>
+                  <con2:xpathText>./ctx:transport/ctx:request</con2:xpathText>
+                </con4:location>
+                <con4:where>first-child</con4:where>
+                <con4:expr>
+                  <con2:xqueryText>&lt;http:http-method>POST&lt;/http:http-method></con2:xqueryText>
+                </con4:expr>
+              </con4:insert>
+            </con4:requestTransform>
+            <con4:responseTransform/>
+          </con4:wsCallout>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="response" name="PipelinePairNode_response">
+      <con:stage name="ResponseStage">
+        <con:context/>
+        <con:actions>
+          <con5:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+            <con6:comment xmlns:con6="http://www.bea.com/wli/sb/stages/config">Takes the response from the REST service and uses it as our &lt;body></con6:comment>
+            <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-3340449399919010129--7bcafef.15fb948dd1f.-746d</con6:id>
+            <con5:location>
+              <con6:xpathText xmlns:con6="http://www.bea.com/wli/sb/stages/config">.</con6:xpathText>
+            </con5:location>
+            <con5:expr>
+              <con6:xqueryText xmlns:con6="http://www.bea.com/wli/sb/stages/config">$response</con6:xqueryText>
+            </con5:expr>
+          </con5:replace>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:pipeline type="error" name="_onErrorHandler-5214944822928574067-3cfdaa47.15f90c74805.-7ffc">
+      <con:stage name="FailureStage">
+        <con:context/>
+        <con:actions>
+          <con3:log>
+            <con2:id>_ActionId-5214944822928574067-3cfdaa47.15f90c74805.-7fe3</con2:id>
+            <con3:logLevel>debug</con3:logLevel>
+          </con3:log>
+          <con1:transport-headers>
+            <con2:id>_ActionId-5214944822928574067-3cfdaa47.15f90c74805.-7fbf</con2:id>
+            <con1:header-set>inbound-response</con1:header-set>
+            <con1:header name="Content-Type" value="expression">
+              <con2:xqueryText>"application/json"</con2:xqueryText>
+            </con1:header>
+          </con1:transport-headers>
+          <con1:replace contents-only="true" varName="body">
+            <con2:id>_ActionId-5214944822928574067-3cfdaa47.15f90c74805.-7fa0</con2:id>
+            <con1:location>
+              <con2:xpathText>.</con2:xpathText>
+            </con1:location>
+            <con1:expr>
+              <con2:xqueryText>fn:string('{
+  "status": {
+    "code": "400",
+    "description": "Failure in Get Mock REsponse"
+  }
+}')</con2:xqueryText>
+            </con1:expr>
+          </con1:replace>
+          <con2:reply isError="true">
+            <con2:id>_ActionId-5214944822928574067-3cfdaa47.15f90c74805.-7f81</con2:id>
+          </con2:reply>
+        </con:actions>
+      </con:stage>
+    </con:pipeline>
+    <con:flow>
+      <con:pipeline-node name="PipelinePairNode">
+        <con:request>PipelinePairNode_request</con:request>
+        <con:response>PipelinePairNode_response</con:response>
+      </con:pipeline-node>
+    </con:flow>
+  </ser:router>
+</xml-fragment>
